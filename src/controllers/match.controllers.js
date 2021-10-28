@@ -337,29 +337,34 @@ matchCtrl.results = async (req,res) => {
 
     scores.sort(function(a,b){return b - a});
 
-    
-
     team_p1 = await Team.find({total_score: scores[0]});
 
-    if(team_p1.length != undefined){
+    if(team_p1.length != 1){
         max = Math.max(team_p1[0]['goals'],team_p1[1]['goals']);
         team_p1 = await Team.find({total_score: scores[0], goals: max});
     }
 
     scores.shift();
 
-    
+    team_p2 = await Team.find({total_score: scores[0]});
 
-    if (scores[0] != scores[1]){
-        team_p1 = await Team.find({total_score: scores[0]});
-    }else if (goals[0] != goals[1]){
-        team_p1 = await Team.find({total_score: scores[0], goals: goals[0]});
+    if(team_p2.length != 1){
+        max = Math.max(team_p2[0]['goals'],team_p2[1]['goals']);
+        team_p2 = await Team.find({total_score: scores[0], goals: max});
     }
 
-    //team_p1 = await Team.find({total_score: scores[0]});
-    //team_p2 = await Team.find({total_score: scores[1]});
-    //team_p3 = await Team.find({total_score: scores[2]});
-    //team_p4 = await Team.find({total_score: scores[3]});
+    scores.shift();
+
+    team_p3 = await Team.find({total_score: scores[0]});
+    
+    if(team_p3.length != 1){
+        max = Math.max(team_p3[0]['goals'],team_p3[1]['goals']);
+        min = Math.min(team_p3[0]['goals'],team_p3[1]['goals']);
+        team_p3 = await Team.find({total_score: scores[0], goals: max});
+    }
+
+    team_p4 = await Team.find({total_score: scores[0], goals: min});
+
 
     res.json([{
         primero: team_p1[0]['name'],
